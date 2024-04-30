@@ -37,6 +37,7 @@ public class HourlyAdapter extends RecyclerView.Adapter<HourlyAdapter.ViewHolder
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Weather currentWeather = weatherList.get(position);
         holder.cityName.setText(currentWeather.getCityName());
+        holder.descriptionTextView.setText(currentWeather.getDescription());
 
         holder.temperature.setText(currentWeather.getTemperature());
 
@@ -59,6 +60,7 @@ public class HourlyAdapter extends RecyclerView.Adapter<HourlyAdapter.ViewHolder
         TextView cityName;
         TextView date;
         TextView temperature;
+        TextView descriptionTextView;
         TextView minTemp;
         TextView maxTemp;
 
@@ -66,6 +68,7 @@ public class HourlyAdapter extends RecyclerView.Adapter<HourlyAdapter.ViewHolder
             super(itemView);
             cityName = itemView.findViewById(R.id.cityNameTextView);
             temperature = itemView.findViewById(R.id.temperatureTextView);
+            descriptionTextView = itemView.findViewById(R.id.descriptionTextView);
         }
     }
 }

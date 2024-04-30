@@ -1,8 +1,11 @@
 package com.example.angel_s2110961.Activities;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,6 +31,7 @@ public class City extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ForecastAdapter adapter;
     private List<Forecast> forecastList;
+    public String selectedCity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,16 +42,28 @@ public class City extends AppCompatActivity {
         initRecyclerView();
 
         // Get the selected city from the intent
-        String selectedCity = getIntent().getStringExtra("city");
+        selectedCity = getIntent().getStringExtra("city");
 
         // Execute weather task for the selected city
         new WeatherTask().execute(selectedCity);
+
+        // Find the back button view
+        ImageView backButton = findViewById(R.id.back_btn);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Create an Intent to start MainActivity
+                Intent intent = new Intent(City.this, MainActivity.class);
+                // Start the activity
+                startActivity(intent);
+            }
+        });
     }
 
     private void initRecyclerView() {
         recyclerView = findViewById(R.id.forecastRecyclerView);
         forecastList = new ArrayList<>();
-        adapter = new ForecastAdapter(forecastList);
+        adapter = new ForecastAdapter(forecastList, this.getApplicationContext());
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
     }
@@ -90,7 +106,7 @@ public class City extends AppCompatActivity {
                 updateUI(currentForecast);
 
                 forecastList.clear();
-                forecastList.addAll(forecastData.subList(1, forecastData.size()));
+                forecastList.addAll(forecastData.subList(0, forecastData.size()));
                 adapter.notifyDataSetChanged();
                 Log.d("WeatherTask", "Forecast data updated in the adapter");
             } else {
@@ -100,55 +116,63 @@ public class City extends AppCompatActivity {
 
         private String getRSSFeedUrl(String city) {
             String rssFeedUrl;
-            switch (city) {
-                case "London":
+            switch (city.toLowerCase()) { // Ensure the city name is converted to lowercase for matching
+                case "london":
                     rssFeedUrl = "https://weather-broker-cdn.api.bbci.co.uk/en/forecast/rss/3day/2643743";
                     break;
-                case "Glasgow":
+                case "glasgow":
                     rssFeedUrl = "https://weather-broker-cdn.api.bbci.co.uk/en/forecast/rss/3day/2648579";
                     break;
-                case "Oman":
+                case "oman":
                     rssFeedUrl = "https://weather-broker-cdn.api.bbci.co.uk/en/forecast/rss/3day/287286";
                     break;
-                case "Port Louis":
+                case "port louis":
                     rssFeedUrl = "https://weather-broker-cdn.api.bbci.co.uk/en/forecast/rss/3day/934154";
                     break;
-                case "Bangladesh":
+                case "bangladesh":
                     rssFeedUrl = "https://weather-broker-cdn.api.bbci.co.uk/en/forecast/rss/3day/1185241";
                     break;
-                case "NewYork":
+                case "new york":
                     rssFeedUrl = "https://weather-broker-cdn.api.bbci.co.uk/en/forecast/rss/3day/5128581";
                     break;
                 default:
-                    rssFeedUrl = "https://weather-broker-cdn.api.bbci.co.uk/en/forecast/rss/3day/2643743";
+                    rssFeedUrl = "https://weather-broker-cdn.api.bbci.co.uk/en/forecast/rss/3day/2643743"; // Default URL
                     break;
             }
-            return rssFeedUrl;
+            // Validate the URL before returning
+            if (rssFeedUrl != null && rssFeedUrl.startsWith("http")) {
+                return rssFeedUrl;
+            } else {
+                Log.e("WeatherTask", "Invalid RSS feed URL for city: " + city);
+                return null; // Return null if the URL is invalid
+            }
         }
-    }
 
-    private void updateUI(Forecast forecast) {
-        String selectedCity = getIntent().getStringExtra("city");
-        switch (selectedCity) {
-            case "London":
-                cityNameTextView.setText("London");
-                break;
-            case "Glasgow":
-                cityNameTextView.setText("Glasgow");
-                break;
-            case "Oman":
-                cityNameTextView.setText("Oman");
-                break;
-            case "Port Louis":
-                cityNameTextView.setText("Port Louis");
-                break;
-            case "Bangladesh":
-                cityNameTextView.setText("Bangladesh");
-                break;
-            case "NewYork":
-                cityNameTextView.setText("New York");
-                break;
+
+        private void updateUI(Forecast forecast) {
+            String selectedCity = getIntent().getStringExtra("city");
+            switch (selectedCity) {
+                case "London":
+                    cityNameTextView.setText("London");
+                    break;
+                case "Glasgow":
+                    cityNameTextView.setText("Glasgow");
+                    break;
+                case "Oman":
+                    cityNameTextView.setText("Oman");
+                    break;
+                case "Port Louis":
+                    cityNameTextView.setText("Port Louis");
+                    break;
+                case "Bangladesh":
+                    cityNameTextView.setText("Bangladesh");
+                    break;
+                case "NewYork":
+                    cityNameTextView.setText("New York");
+                    break;
+            }
+            adapter.notifyDataSetChanged();
         }
-        adapter.notifyDataSetChanged();
+
     }
 }

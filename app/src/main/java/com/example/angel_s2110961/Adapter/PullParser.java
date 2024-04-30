@@ -87,13 +87,23 @@ public class PullParser {
 
         Weather weather = new Weather();
         weather.setTemperature(extractTemperature(title));
-        weather.setDescription(extractDescription(title));
+
+        try {
+            weather.setDescription(extractDescription(title));
+        } catch (ArrayIndexOutOfBoundsException e) {
+            Log.e("PullParser", "Error extracting description", e);
+            // Set a default value or handle the error as needed
+            weather.setDescription("");
+        }
+
         weather.setWindDirection(extractWindDirection(description));
 
         Log.d("PullParser", "Parsed Weather: " + weather.toString());
 
         return weather;
     }
+
+
 
     private String readText(XmlPullParser parser) throws IOException, XmlPullParserException {
         String result = "";
@@ -122,34 +132,67 @@ public class PullParser {
     }
 
     private String extractTemperature(String title) {
-        // Extract temperature from the title
         String[] parts = title.split(",");
-        if (parts.length > 1) {
-            return parts[1].trim();
-        }
-        return "";
-    }
-
-    private String extractDescription(String channelDescription) {
-        // Extract description from the channel description
-        if (channelDescription != null) {
-            String[] parts = channelDescription.split(",");
-            if (parts.length > 0) {
-                String weatherPart = parts[0].trim();
-                int weatherIndex = weatherPart.indexOf("weather");
-                if (weatherIndex != -1) {
-                    return weatherPart.substring(weatherIndex + "weather".length()).trim();
-                }
+        for (String part : parts) {
+            if (part.contains("Temperature")) {
+                return part.split(":")[1].trim();
             }
         }
         return "";
     }
 
+    private String extractDescription(String title) {
+        String[] parts = title.split(",");
+        if (parts.length > 0) {
+            return parts[0].trim();
+        }
+        return "";
+    }
+
     private String extractWindDirection(String description) {
-        // Extract wind direction from the description
         String[] parts = description.split(",");
         for (String part : parts) {
             if (part.contains("Wind Direction")) {
+                return part.split(":")[1].trim();
+            }
+        }
+        return "";
+    }
+
+    private String extractWindSpeed(String description) {
+        String[] parts = description.split(",");
+        for (String part : parts) {
+            if (part.contains("Wind Speed")) {
+                return part.split(":")[1].trim();
+            }
+        }
+        return "";
+    }
+
+    private String extractVisibility(String description) {
+        String[] parts = description.split(",");
+        for (String part : parts) {
+            if (part.contains("Visibility")) {
+                return part.split(":")[1].trim();
+            }
+        }
+        return "";
+    }
+
+    private String extractPressure(String description) {
+        String[] parts = description.split(",");
+        for (String part : parts) {
+            if (part.contains("Pressure")) {
+                return part.split(":")[1].trim();
+            }
+        }
+        return "";
+    }
+
+    private String extractHumidity(String description) {
+        String[] parts = description.split(",");
+        for (String part : parts) {
+            if (part.contains("Humidity")) {
                 return part.split(":")[1].trim();
             }
         }

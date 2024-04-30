@@ -1,5 +1,7 @@
 package com.example.angel_s2110961.Adapter;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.angel_s2110961.Activities.Day;
 import com.example.angel_s2110961.Domains.Forecast;
 import com.example.angel_s2110961.R;
 
@@ -17,9 +20,22 @@ import java.util.List;
 
 public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHolder> {
     private List<Forecast> forecastList;
+    private OnItemClickListener listener;
+    private Context context;
+    private String selectedCity;
 
-    public ForecastAdapter(List<Forecast> forecastList) {
+    public ForecastAdapter(List<Forecast> forecastList, Context context) {
         this.forecastList = forecastList;
+        this.context = context;
+        this.selectedCity = "Glasgow";
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(Forecast forecast);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
     }
 
     @NonNull
@@ -51,24 +67,31 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHo
         }
 
         // Set the temperature bar progress
-        int temperature = 0;
-        int minTemperature = 0;
-        int maxTemperature = 0;
-
-        if (forecast.getTemperature() != null && !forecast.getTemperature().isEmpty()) {
-            temperature = Integer.parseInt(forecast.getTemperature().split("°")[0]);
+        String currentTemp = forecast.getTemperature();
+        if (currentTemp != null && !currentTemp.isEmpty()) {
+            // Extract the numeric part of the temperature string
+            String[] tempParts = currentTemp.split("\\D+");
+            if (tempParts.length > 0) {
+                String tempValue = tempParts[0];
+                try {
+                    // Convert the temperature string to an integer
+                    int temperature = Integer.parseInt(tempValue);
+                    // Set the progress of the temperature bar
+                    holder.temperatureBar.setProgress(temperature);
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
-        if (forecast.getMinTemperature() != null && !forecast.getMinTemperature().isEmpty()) {
-            minTemperature = Integer.parseInt(forecast.getMinTemperature().split("°")[0]);
-        }
-
-        if (forecast.getMaxTemperature() != null && !forecast.getMaxTemperature().isEmpty()) {
-            maxTemperature = Integer.parseInt(forecast.getMaxTemperature().split("°")[0]);
-        }
-
-        int progress = (temperature - minTemperature) * 100 / (maxTemperature - minTemperature);
-        holder.temperatureBar.setProgress(progress);
+        holder.itemView.setOnClickListener(item -> {
+            System.out.println("Item City clicked Forecast adapter");
+            Intent intent = new Intent(context, Day.class);
+            intent.putExtra("city", selectedCity);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            // Start the activity
+            context.startActivity(intent);
+        });
     }
 
     @Override

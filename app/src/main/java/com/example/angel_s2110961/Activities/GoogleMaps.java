@@ -3,9 +3,9 @@ package com.example.angel_s2110961.Activities;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -16,8 +16,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -28,7 +30,7 @@ import java.util.Locale;
 public class GoogleMaps extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap myMap;
-    private EditText searchInput;
+    private MarkerOptions selectedMarker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,20 +40,6 @@ public class GoogleMaps extends AppCompatActivity implements OnMapReadyCallback 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
-        /*searchInput = findViewById(R.id.searchmap);
-        searchInput.setOnEditorActionListener((v, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                String query = searchInput.getText().toString();
-                if (!query.isEmpty()) {
-                    searchLocation(query);
-                } else {
-                    Toast.makeText(getApplicationContext(), "Please enter a location", Toast.LENGTH_SHORT).show();
-                }
-                return true;
-            }
-            return false;
-        });*/
 
         bottomMenu();
     }
@@ -68,7 +56,6 @@ public class GoogleMaps extends AppCompatActivity implements OnMapReadyCallback 
                     return true;
                 } else if (item.getItemId() == R.id.map) {
                     // Handle the Map menu item click
-
                     return true;
                 }
                 return false;
@@ -98,6 +85,10 @@ public class GoogleMaps extends AppCompatActivity implements OnMapReadyCallback 
     public void onMapReady(@NonNull GoogleMap googleMap) {
         myMap = googleMap;
 
+        UiSettings uiSettings = myMap.getUiSettings();
+        uiSettings.setZoomControlsEnabled(true);
+        // Enable zoom gestures
+        uiSettings.setZoomGesturesEnabled(true);
         // Initialize markers for predefined cities
         LatLng glasgow = new LatLng(55.8642, -4.2518);
         LatLng london = new LatLng(51.5074, -0.1278);
@@ -125,5 +116,37 @@ public class GoogleMaps extends AppCompatActivity implements OnMapReadyCallback 
         LatLngBounds bounds = builder.build();
         int padding = 100;
         myMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
+
+        // Set up marker click listener
+        myMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                selectedMarker = new MarkerOptions().position(marker.getPosition()).title(marker.getTitle());
+                openGoogleMapsForDirections();
+                return false;
+            }
+        });
+    }
+
+    private void openGoogleMapsForDirections() {
+        if (selectedMarker != null) {
+            // Create a Uri for the selected marker's position
+            Uri gmmIntentUri = Uri.parse("google.navigation:q=" + selectedMarker.getPosition().latitude + ","
+                    + selectedMarker.getPosition().longitude);
+
+            // Create an Intent with the action view and the Uri
+            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+
+            // Set the package to ensure Google Maps opens
+            mapIntent.setPackage("com.google.android.apps.maps");
+
+            // Attempt to start the activity
+            if (mapIntent.resolveActivity(getPackageManager()) != null) {
+                startActivity(mapIntent);
+            } else {
+                // Handle the case where Google Maps is not installed on the device
+                Toast.makeText(getApplicationContext(), "Google Maps app is not installed", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }

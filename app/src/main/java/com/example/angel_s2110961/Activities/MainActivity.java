@@ -137,28 +137,29 @@ public class MainActivity extends AppCompatActivity implements HourlyAdapter.OnI
             String rssFeedUrl;
             switch (city) {
                 case "London":
-                    rssFeedUrl = "https://weather-broker-cdn.api.bbci.co.uk/en/observation/rss/2643743";
+                    rssFeedUrl = "https://weather-broker-cdn.api.bbci.co.uk/en/forecast/rss/3day/2643743";
                     break;
                 case "Glasgow":
-                    rssFeedUrl = "https://weather-broker-cdn.api.bbci.co.uk/en/observation/rss/2648579";
+                    rssFeedUrl = "https://weather-broker-cdn.api.bbci.co.uk/en/forecast/rss/3day/2648579";
                     break;
                 case "Oman":
-                    rssFeedUrl = "https://weather-broker-cdn.api.bbci.co.uk/en/observation/rss/287286";
+                    rssFeedUrl = "https://weather-broker-cdn.api.bbci.co.uk/en/forecast/rss/3day/287286";
                     break;
                 case "Mauritius":
-                    rssFeedUrl = "https://weather-broker-cdn.api.bbci.co.uk/en/observation/rss/934154";
+                    rssFeedUrl = "https://weather-broker-cdn.api.bbci.co.uk/en/forecast/rss/3day/934154";
                     break;
                 case "Bangladesh":
-                    rssFeedUrl = "https://weather-broker-cdn.api.bbci.co.uk/en/observation/rss/1185241";
+                    rssFeedUrl = "https://weather-broker-cdn.api.bbci.co.uk/en/forecast/rss/3day/1185241";
                     break;
                 case "NewYork":
-                    rssFeedUrl = "https://weather-broker-cdn.api.bbci.co.uk/en/observation/rss/5128581";
+                    rssFeedUrl = "https://weather-broker-cdn.api.bbci.co.uk/en/forecast/rss/3day/5128581";
                     break;
                 default:
-                    rssFeedUrl = "https://weather-broker-cdn.api.bbci.co.uk/en/observation/rss/2643743";
+                    rssFeedUrl = "https://weather-broker-cdn.api.bbci.co.uk/en/forecast/rss/3day/2643743";
                     break;
             }
             return rssFeedUrl;
         }
     }
+
 }

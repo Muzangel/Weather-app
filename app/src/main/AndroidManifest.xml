@@ -29,10 +29,15 @@
             android:name=".Activities.City"
             android:exported="false" />
 
+        <activity android:name=".Activities.Day" />
+
         <!-- Add your Google Maps API key here -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDXHkHLW0xkiti5HVYZ5zkqou5QdjlZseE" />
+        <activity
+            android:name=".Activities.GoogleMaps"
+            android:exported="false" />
 
     </application>
 

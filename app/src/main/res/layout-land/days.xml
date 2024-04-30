@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/backg"
-    tools:context=".Activities.MainActivity">
+    tools:context=".Activities.Day">
 
 
     <TextView
@@ -13,11 +13,19 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="16dp"
         android:textColor="@android:color/black"
-        android:textSize="30sp"
-        android:textStyle="bold"/>
+        android:textSize="24sp" />
 
+    <TextView
+        android:id="@+id/dayTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp"
+        android:textColor="@android:color/black"
+        android:textSize="24sp" />
 
     <ImageView
         android:id="@+id/back_btn"
@@ -32,13 +40,15 @@
         android:src="@drawable/back_to" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/forecastRecyclerView"
+        android:id="@+id/dayRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/cityNameTextView"
         android:clipToPadding="false"
-        android:layout_marginTop="40dp"
-        android:paddingEnd="10dp" />
+        android:paddingStart="30dp"
+        android:paddingEnd="10dp"
+        android:layout_marginTop="30dp"/>
+
 
     <TextView
         android:id="@+id/name"

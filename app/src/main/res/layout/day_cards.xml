@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <!-- First vertical line -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- City Name and Date card -->
+
+        <!-- Temperature card -->
+
+        <!-- Pressure card -->
+
+        <!-- Visibility card -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="168dp"
+            android:layout_height="132dp"
+            android:layout_margin="8dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="@color/blue3">
+
+            <ImageView
+                android:id="@+id/icon3"
+                android:layout_width="84dp"
+                android:layout_height="70dp"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="40dp"
+                android:src="@drawable/cloudy_2" />
+
+            <TextView
+                android:id="@+id/visibilityTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="@color/white"
+                android:layout_marginTop="20dp"
+                android:textStyle="bold"
+                android:layout_marginLeft="25dp"/>
+            <!-- Content of the card -->
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="168dp"
+            android:layout_height="132dp"
+            android:layout_margin="8dp"
+            app:cardBackgroundColor="@color/blue3"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp">
+
+            <ImageView
+                android:id="@+id/icon5"
+                android:layout_width="84dp"
+                android:layout_height="70dp"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="40dp"
+                android:src="@drawable/windy" />
+
+            <TextView
+                android:id="@+id/windSpeedTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="25dp"
+                android:layout_marginTop="20dp"
+                android:text=""
+                android:textColor="@color/white"
+                android:textStyle="bold" />
+
+            <!-- Content of the card -->
+        </androidx.cardview.widget.CardView>
+
+        <!-- UV Risk card -->
+
+    </LinearLayout>
+
+    <!-- Second vertical line -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- Description card -->
+
+        <!-- Wind Speed card -->
+
+        <!-- Humidity card -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="168dp"
+            android:layout_height="132dp"
+            android:layout_margin="8dp"
+            app:cardBackgroundColor="@color/blue3"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp">
+
+            <ImageView
+                android:id="@+id/icon6"
+                android:layout_width="84dp"
+                android:layout_height="70dp"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="40dp"
+                android:src="@drawable/humidity" />
+
+            <TextView
+                android:id="@+id/humidityTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:layout_marginTop="20dp"
+                android:textStyle="bold"
+                android:layout_marginLeft="25dp"
+                android:text="" />
+
+            <!-- Content of the card -->
+        </androidx.cardview.widget.CardView>
+
+
+        <!-- Wind Direction card -->
+    </LinearLayout>
+
+</LinearLayout>
