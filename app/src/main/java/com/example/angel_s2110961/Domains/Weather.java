@@ -1,11 +1,10 @@
 package com.example.angel_s2110961.Domains;
 
 public class Weather {
-        private String cityName;
-        private String date;
-        private String temperature;
-        private String minTemp;
-        private String maxTemp;
+    private String cityName;
+    private String temperature;
+    private String description;
+    private String windDirection;
 
     public Weather() {
     }
@@ -19,54 +18,37 @@ public class Weather {
         this.cityName = cityName;
     }
 
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String title) {
-        this.date = title;
-    }
-
     public String getTemperature() {
         return temperature;
     }
 
-    public void setTemperature(String description) {
-        this.temperature = description;
+    public void setTemperature(String temperature) {
+        this.temperature = temperature;
     }
 
-
-   /* public void setWeatherCondition(String weatherCondition) {
-        this.weatherCondition = weatherCondition;
-    }*/
-
-    public String getMinTemp() {
-        return minTemp;
+    public String getDescription() {
+        return description;
     }
 
-    public void setMinTemp(String minTemp) {
-        this.minTemp = minTemp;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public String getMaxTemp() {
-        return maxTemp;
+    public String getWindDirection() {
+        return windDirection;
     }
 
-    public void setMaxTemp(String maxTemp) {
-        this.maxTemp = maxTemp;
+    public void setWindDirection(String windDirection) {
+        this.windDirection = windDirection;
     }
 
     @Override
     public String toString() {
         return "Weather{" +
                 "cityName='" + cityName + '\'' +
-                ", date='" + date + '\'' +
                 ", temperature='" + temperature + '\'' +
-                ", minTemp='" + minTemp + '\'' +
-                ", maxTemp='" + maxTemp + '\'' +
+                ", description='" + description + '\'' +
+                ", windDirection='" + windDirection + '\'' +
                 '}';
-    }
-
-    public void setPubDate(String pubDate) {
     }
 }

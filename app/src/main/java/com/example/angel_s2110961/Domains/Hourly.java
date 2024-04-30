@@ -1,3 +1,4 @@
+/*
 package com.example.angel_s2110961.Domains;
 
 public class Hourly {
@@ -35,3 +36,4 @@ public class Hourly {
         this.temp = temp;
     }
 }
+*/

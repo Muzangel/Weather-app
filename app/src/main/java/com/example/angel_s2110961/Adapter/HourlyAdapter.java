@@ -15,9 +15,15 @@ import java.util.List;
 
 public class HourlyAdapter extends RecyclerView.Adapter<HourlyAdapter.ViewHolder> {
     private List<Weather> weatherList;
+    private OnItemClickListener listener;
 
-    public HourlyAdapter(List<Weather> weatherList) {
+    public interface OnItemClickListener {
+        void onItemClick(String city);
+    }
+
+    public HourlyAdapter(List<Weather> weatherList, OnItemClickListener listener) {
         this.weatherList = weatherList;
+        this.listener = listener;
     }
 
     @NonNull
@@ -31,10 +37,17 @@ public class HourlyAdapter extends RecyclerView.Adapter<HourlyAdapter.ViewHolder
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Weather currentWeather = weatherList.get(position);
         holder.cityName.setText(currentWeather.getCityName());
-        holder.date.setText(currentWeather.getDate());
+
         holder.temperature.setText(currentWeather.getTemperature());
-        holder.minTemp.setText("L: " + currentWeather.getMinTemp());
-        holder.maxTemp.setText("H: " + currentWeather.getMaxTemp());
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (listener != null) {
+                    listener.onItemClick(currentWeather.getCityName());
+                }
+            }
+        });
     }
 
     @Override
@@ -52,10 +65,7 @@ public class HourlyAdapter extends RecyclerView.Adapter<HourlyAdapter.ViewHolder
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             cityName = itemView.findViewById(R.id.cityNameTextView);
-            date = itemView.findViewById(R.id.dateTextView);
             temperature = itemView.findViewById(R.id.temperatureTextView);
-            minTemp = itemView.findViewById(R.id.minTempTextView);
-            maxTemp = itemView.findViewById(R.id.maxTempTextView);
         }
     }
 }

@@ -12,14 +12,21 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
-    <SearchView
+    <!--<EditText
         android:id="@+id/searchmap"
-        android:layout_width="300dp"
-        android:layout_height="40dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:background="@drawable/searchbar"
-        app:queryHint="Search for a city..."
-        app:layout_editor_absoluteX="55dp"
-        app:layout_editor_absoluteY="96dp" />
+        android:hint="Search for a city..." />-->
 
 
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/navbar"
+        android:background="@drawable/citybg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_nav"/>
 </LinearLayout>

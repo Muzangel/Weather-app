@@ -1,83 +1,154 @@
-/*
 package com.example.angel_s2110961.Activities;
 
-import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.MenuItem;
-import android.widget.ImageView;
+import android.util.Log;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.angel_s2110961.Domains.CityDomain;
+import com.example.angel_s2110961.Adapter.CityParser;
+import com.example.angel_s2110961.Adapter.ForecastAdapter;
+import com.example.angel_s2110961.Domains.Forecast;
 import com.example.angel_s2110961.R;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class City extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
+import org.xmlpull.v1.XmlPullParserException;
 
-    private TextView cityNameTextView, temperatureTextView, sceneTextView, highLowTextView;
-    private ImageView weatherIconImageView;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+public class City extends AppCompatActivity {
+    private TextView cityNameTextView;
+    private RecyclerView recyclerView;
+    private ForecastAdapter adapter;
+    private List<Forecast> forecastList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.city);
+        setContentView(R.layout.activity_main);
 
-        initViews();
-        setBottomNavigation();
-
-        // Get the city data from the intent
-        City city = (City) getIntent().getSerializableExtra("city");
-        if (city != null) {
-            displayCityDetails(city);
-        }
-    }
-
-    private void initViews() {
         cityNameTextView = findViewById(R.id.cityNameTextView);
-        temperatureTextView = findViewById(R.id.temperatureTextView);
-        sceneTextView = findViewById(R.id.sceneTextView);
-        highLowTextView = findViewById(R.id.highLowTextView);
-        weatherIconImageView = findViewById(R.id.weatherIconImageView);
+        initRecyclerView();
+
+        // Get the selected city from the intent
+        String selectedCity = getIntent().getStringExtra("city");
+
+        // Execute weather task for the selected city
+        new WeatherTask().execute(selectedCity);
     }
 
-    private void displayCityDetails(City city) {
-        cityNameTextView.setText(city.getTheme());
-        temperatureTextView.setText(String.valueOf(city.getTemperature()));
-        sceneTextView.setText(city.getWeatherScene());
-        highLowTextView.setText(getString(R.string.high_low_temperature, city.getHighTemperature(), city.getLowTemperature()));
-        weatherIconImageView.setImageResource(getWeatherIconResource(city.getWeatherIcon()));
+    private void initRecyclerView() {
+        recyclerView = findViewById(R.id.forecastRecyclerView);
+        forecastList = new ArrayList<>();
+        adapter = new ForecastAdapter(forecastList);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(adapter);
     }
 
-private int getWeatherIconResource(String weatherIcon) {
-        // Map the weather icon string to the corresponding resource ID
-        // You can create a separate utility class or method for this mapping
-        return R.drawable.your_weather_icon_drawable;
-    }
+    private class WeatherTask extends AsyncTask<String, Void, List<Forecast>> {
 
+        @Override
+        protected List<Forecast> doInBackground(String... params) {
+            String city = params[0];
+            String rssFeedUrl = getRSSFeedUrl(city);
+            Log.d("WeatherTask", "Fetching weather data for city: " + city);
+            Log.d("WeatherTask", "RSS Feed URL: " + rssFeedUrl);
+            try {
+                URL url = new URL(rssFeedUrl);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+                connection.setConnectTimeout(5000);
+                connection.setReadTimeout(5000);
+                connection.connect();
 
-private void setBottomNavigation() {
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setOnNavigationItemSelectedListener(this);
-    }
-
-
-@Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.nav_home:
-                startActivity(new Intent(this, MainActivity.class));
-                return true;
-            case R.id.nav_map:
-                startActivity(new Intent(this, MapsActivity.class));
-                return true;
-            case R.id.nav_settings:
-                startActivity(new Intent(this, SettingsActivity.class));
-                return true;
+                if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                    InputStream inputStream = connection.getInputStream();
+                    CityParser parser = new CityParser();
+                    List<Forecast> forecastData = parser.parse(inputStream);
+                    Log.d("WeatherTask", "Fetched forecast data size: " + forecastData.size());
+                    return forecastData;
+                } else {
+                    Log.e("WeatherTask", "Failed to fetch weather data. Response Code: " + connection.getResponseCode());
+                }
+            } catch (IOException | XmlPullParserException e) {
+                Log.e("WeatherTask", "Error fetching weather data", e);
+            }
+            return null;
         }
-        return false;
+
+        @Override
+        protected void onPostExecute(List<Forecast> forecastData) {
+            if (forecastData != null && !forecastData.isEmpty()) {
+                Forecast currentForecast = forecastData.get(0);
+                updateUI(currentForecast);
+
+                forecastList.clear();
+                forecastList.addAll(forecastData.subList(1, forecastData.size()));
+                adapter.notifyDataSetChanged();
+                Log.d("WeatherTask", "Forecast data updated in the adapter");
+            } else {
+                Log.d("WeatherTask", "No forecast data available");
+            }
+        }
+
+        private String getRSSFeedUrl(String city) {
+            String rssFeedUrl;
+            switch (city) {
+                case "London":
+                    rssFeedUrl = "https://weather-broker-cdn.api.bbci.co.uk/en/forecast/rss/3day/2643743";
+                    break;
+                case "Glasgow":
+                    rssFeedUrl = "https://weather-broker-cdn.api.bbci.co.uk/en/forecast/rss/3day/2648579";
+                    break;
+                case "Oman":
+                    rssFeedUrl = "https://weather-broker-cdn.api.bbci.co.uk/en/forecast/rss/3day/287286";
+                    break;
+                case "Port Louis":
+                    rssFeedUrl = "https://weather-broker-cdn.api.bbci.co.uk/en/forecast/rss/3day/934154";
+                    break;
+                case "Bangladesh":
+                    rssFeedUrl = "https://weather-broker-cdn.api.bbci.co.uk/en/forecast/rss/3day/1185241";
+                    break;
+                case "NewYork":
+                    rssFeedUrl = "https://weather-broker-cdn.api.bbci.co.uk/en/forecast/rss/3day/5128581";
+                    break;
+                default:
+                    rssFeedUrl = "https://weather-broker-cdn.api.bbci.co.uk/en/forecast/rss/3day/2643743";
+                    break;
+            }
+            return rssFeedUrl;
+        }
     }
 
+    private void updateUI(Forecast forecast) {
+        String selectedCity = getIntent().getStringExtra("city");
+        switch (selectedCity) {
+            case "London":
+                cityNameTextView.setText("London");
+                break;
+            case "Glasgow":
+                cityNameTextView.setText("Glasgow");
+                break;
+            case "Oman":
+                cityNameTextView.setText("Oman");
+                break;
+            case "Port Louis":
+                cityNameTextView.setText("Port Louis");
+                break;
+            case "Bangladesh":
+                cityNameTextView.setText("Bangladesh");
+                break;
+            case "NewYork":
+                cityNameTextView.setText("New York");
+                break;
+        }
+        adapter.notifyDataSetChanged();
+    }
 }
-*/
