@@ -161,4 +161,5 @@ public class MainActivity extends AppCompatActivity implements HourlyAdapter.OnI
             return rssFeedUrl;
         }
     }
+
 }

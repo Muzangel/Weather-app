@@ -81,10 +81,12 @@ public class CityParser {
         }
 
         Forecast forecast = new Forecast();
+        forecast.setStatus(extractStatus(title));
         forecast.setCityName(extractCityName(title));
         forecast.setDate(extractDay(title));
         forecast.setTemperature(extractTemperature(title));
-        forecast.setMinTemperature(extractMinTemperature(title));
+        forecast.setMaxTemperature(extractMaxTemperature(description));
+        forecast.setMinTemperature(extractMinTemperature(description));
 
         Log.d("PullParser", "Parsed Forecast: " + forecast.toString());
 
@@ -135,11 +137,12 @@ public class CityParser {
 
 
     private String extractStatus(String title) {
-        String[] parts = title.split(":");
-        if (parts.length > 1) {
-            return parts[1].trim();
-        }
-        return "";
+        return title.split(":")[1].split(",")[0].trim();
+//        String[] parts = title.split(":")[1].split(",")[0].trim();
+//        if (parts.length > 1) {
+//            return parts[1].trim();
+//        }
+//        return "";
     }
 
 
@@ -154,29 +157,36 @@ public class CityParser {
     }
 
     private String extractMinTemperature(String title) {
+
         if (title != null) {
-            String[] parts = title.split(":");
-            if (parts.length > 2) {
-                String temperaturePart = parts[2].trim();
-                String[] temperatureParts = temperaturePart.split("Maximum");
-                if (temperatureParts.length > 0) {
-                    return temperatureParts[0].trim();
-                }
-            }
+            String[] temperatureParts = title.split("Minimum Temperature:");
+            String temp = temperatureParts[1].split(",")[0].trim().split(" ")[0];
+            return temp;
+//            String[] parts = title.split(":");
+//            if (parts.length > 2) {
+//                String temperaturePart = parts[2].trim();
+//                String[] temperatureParts = temperaturePart.split("Minimum Temperature");
+//                if (temperatureParts.length > 0) {
+//                    return temperatureParts[0].trim();
+//                }
+//            }
         }
         return "";
     }
 
     private String extractMaxTemperature(String title) {
         if (title != null) {
-            String[] parts = title.split(":");
-            if (parts.length > 2) {
-                String temperaturePart = parts[2].trim();
-                String[] temperatureParts = temperaturePart.split("Maximum");
-                if (temperatureParts.length > 1) {
-                    return temperatureParts[1].trim();
-                }
-            }
+            String[] temperatureParts = title.split("Maximum Temperature:");
+            String temp = temperatureParts[1].split(",")[0].trim().split(" ")[0];
+            return temp;
+//            String[] parts = title.split(":");
+//            if (parts.length > 2) {
+//                String temperaturePart = parts[2].trim();
+//                String[] temperatureParts = temperaturePart.split("Maximum Temperature");
+//                if (temperatureParts.length > 1) {
+//                    return temperatureParts[1].trim();
+//                }
+//            }
         }
         return "";
     }

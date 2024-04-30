@@ -134,13 +134,16 @@ public class PullParser {
         // Extract description from the channel description
         if (channelDescription != null) {
             String[] parts = channelDescription.split(",");
-            if (parts.length > 0) {
-                String weatherPart = parts[0].trim();
-                int weatherIndex = weatherPart.indexOf("weather");
-                if (weatherIndex != -1) {
-                    return weatherPart.substring(weatherIndex + "weather".length()).trim();
-                }
-            }
+//            if (parts.length > 0) {
+//                String weatherPart = parts[0].trim();
+//                int weatherIndex = weatherPart.indexOf("weather");
+//                if (weatherIndex != -1) {
+//                    return weatherPart.substring(weatherIndex + "weather".length()).trim();
+//                }
+//            }
+            String temp = parts[0];
+            String temp2 = temp.split(":")[2].trim();
+            return temp2;
         }
         return "";
     }

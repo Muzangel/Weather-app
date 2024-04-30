@@ -1,8 +1,11 @@
 package com.example.angel_s2110961.Activities;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -42,6 +45,18 @@ public class City extends AppCompatActivity {
 
         // Execute weather task for the selected city
         new WeatherTask().execute(selectedCity);
+
+        // Find the back button view
+        ImageView backButton = findViewById(R.id.back_btn);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Create an Intent to start MainActivity
+                Intent intent = new Intent(City.this, MainActivity.class);
+                // Start the activity
+                startActivity(intent);
+            }
+        });
     }
 
     private void initRecyclerView() {
@@ -90,7 +105,7 @@ public class City extends AppCompatActivity {
                 updateUI(currentForecast);
 
                 forecastList.clear();
-                forecastList.addAll(forecastData.subList(1, forecastData.size()));
+                forecastList.addAll(forecastData.subList(0, forecastData.size()));
                 adapter.notifyDataSetChanged();
                 Log.d("WeatherTask", "Forecast data updated in the adapter");
             } else {
